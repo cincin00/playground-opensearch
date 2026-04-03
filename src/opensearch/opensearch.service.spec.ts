@@ -1,0 +1,19 @@
+import { Test, type TestingModule } from '@nestjs/testing';
+
+import { OpensearchService } from './opensearch.service';
+
+describe('OpensearchService', () => {
+  let service: OpensearchService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [OpensearchService],
+    }).compile();
+
+    service = module.get<OpensearchService>(OpensearchService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+});
