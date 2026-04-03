@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-export interface ServiceStatus {
-  service: string;
-  status: 'ok';
-  timestamp: string;
-}
+import { ServiceStatusDto } from './dto/service-status.dto';
 
 @Injectable()
 export class AppService {
-  getStatus(): ServiceStatus {
+  getStatus(): ServiceStatusDto {
     return {
       service: 'playground-opensearch',
       status: 'ok',
