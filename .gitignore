@@ -1,7 +1,18 @@
 /dist
 /coverage
 /node_modules
+
+# Local environment files
 .env
-.env.local
+.env.*
+!.env.example
+!.env.*.example
+
+# Local editor and OS files
+.vscode/
+.idea/
+.DS_Store
+.codex
+
 npm-debug.log*
 *.tsbuildinfo
