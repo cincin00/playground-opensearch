@@ -3,11 +3,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    command: npm run start:dev
     environment:
       HOST: 0.0.0.0
+      NODE_ENV: development
       PORT: 3000
+      WATCHPACK_POLLING: "true"
     ports:
       - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
     depends_on:
       - mysql-service
 

@@ -5,6 +5,14 @@ A fresh NestJS service scaffold.
 ## Getting started
 
 ```bash
+docker compose up --build
+```
+
+The `app` service runs in development mode with file watching enabled, so source code changes are reflected automatically inside the container.
+
+For local Node.js execution without Docker:
+
+```bash
 npm install
 npm run start:dev
 ```
