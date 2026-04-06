@@ -6,6 +6,11 @@ services:
     command: npm run start:dev
     environment:
       HOST: 0.0.0.0
+      MYSQL_HOST: mysql-service
+      MYSQL_DB_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       NODE_ENV: development
       PORT: 3000
       WATCHPACK_POLLING: "true"
@@ -14,8 +19,10 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/dist
     depends_on:
-      - mysql-service
+      mysql-service:
+        condition: service_healthy
 
   nginx-service:
     image: nginx:latest
@@ -41,6 +48,14 @@ services:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
       - "${MYSQL_DB_PORT}:3306"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
 
 volumes:
   mysql-data:
