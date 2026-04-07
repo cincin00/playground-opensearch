@@ -11,11 +11,12 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      OPENSEARCH_NODE: http://opensearch-service:9200
       NODE_ENV: development
       PORT: 3000
-      WATCHPACK_POLLING: "true"
+      WATCHPACK_POLLING: 'true'
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - .:/app
       - /app/node_modules
@@ -23,13 +24,15 @@ services:
     depends_on:
       mysql-service:
         condition: service_healthy
+      opensearch-service:
+        condition: service_started
 
   nginx-service:
     image: nginx:latest
     depends_on:
       - app
     ports:
-      - "80:80"
+      - '80:80'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
@@ -47,7 +50,7 @@ services:
       - mysql-data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
-      - "${MYSQL_DB_PORT}:3306"
+      - '${MYSQL_DB_PORT}:3306'
     healthcheck:
       test:
         - CMD-SHELL
@@ -57,5 +60,26 @@ services:
       retries: 20
       start_period: 20s
 
+  opensearch-service:
+    image: opensearchproject/opensearch:latest
+    environment:
+      discovery.type: single-node
+      DISABLE_INSTALL_DEMO_CONFIG: 'true'
+      DISABLE_SECURITY_PLUGIN: 'true'
+      OPENSEARCH_JAVA_OPTS: '-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+      - '9200:9200'
+      - '9600:9600'
+
 volumes:
   mysql-data:
+  opensearch-data:
