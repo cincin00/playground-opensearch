@@ -1,6 +1,6 @@
 # playground-opensearch
 
-![opensearch-dashboard](image-1.png)
+![opensearch-dashboard](image.png)
 
 A fresh NestJS service scaffold.
 
