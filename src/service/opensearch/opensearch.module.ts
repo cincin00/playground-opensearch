@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OpensearchModule as NestjsOpensearchModule } from 'nestjs-opensearch';
 
 import { ConfigureModule } from '../config/config.module';
+import { ProductModule } from '../product/product.module';
 import { OpensearchController } from './opensearch.controller';
 import { OpensearchService } from './opensearch.service';
 
@@ -13,6 +14,7 @@ import { OpensearchService } from './opensearch.service';
  */
 @Module({
   imports: [
+    ProductModule,
     NestjsOpensearchModule.forRootAsync({
       imports: [ConfigureModule],
       inject: [ConfigService],
