@@ -60,6 +60,8 @@ services:
       retries: 20
       start_period: 20s
 
+  # OpenSearch 서비스 설정
+  # https://docs.opensearch.org/latest/install-and-configure/install-opensearch/docker/#sample-docker-compose-file-for-development
   opensearch-service:
     image: opensearchproject/opensearch:latest
     environment:
@@ -79,6 +81,18 @@ services:
     ports:
       - '9200:9200'
       - '9600:9600'
+  opensearch-dashboards:
+    build:
+      context: .
+      dockerfile: Dockerfile.opensearch-dashboards
+    container_name: opensearch-dashboards
+    depends_on:
+      opensearch-service:
+        condition: service_started
+    ports:
+      - 5601:5601 # Map host port 5601 to container port 5601
+    expose:
+      - '5601' # Expose port 5601 for web access to OpenSearch Dashboards
 
 volumes:
   mysql-data:

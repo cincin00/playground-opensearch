@@ -1,5 +1,7 @@
 # playground-opensearch
 
+![opensearch-dashboard](image-1.png)
+
 A fresh NestJS service scaffold.
 
 ## Getting started

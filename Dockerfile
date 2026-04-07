@@ -19,5 +19,5 @@ ENV PORT=3000
 # 애플리케이션이 컨테이너 내부에서 사용하는 포트를 문서화합니다.
 EXPOSE 3000
 
-# 빌드된 NestJS 애플리케이션을 운영 모드로 실행합니다.
-CMD ["npm", "run", "start:prod"]
+# 빌드된 NestJS 애플리케이션을 실행합니다.
+CMD ["npm", "run", "start:dev"]

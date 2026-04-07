@@ -1,0 +1,5 @@
+server.name: opensearch-dashboards
+server.host: "0.0.0.0"
+server.ssl.enabled: false
+
+opensearch.hosts: ["http://opensearch-service:9200"]
