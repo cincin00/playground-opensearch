@@ -1,3 +1,5 @@
+# OpenSearch Dashboards 전용 커스텀 이미지
+# - OpenSearch Dashboards 에서 securityDashboards  플러그인 제거하여 무인증 방식으로 변경
 FROM opensearchproject/opensearch-dashboards:latest
 
 RUN /usr/share/opensearch-dashboards/bin/opensearch-dashboards-plugin remove securityDashboards
