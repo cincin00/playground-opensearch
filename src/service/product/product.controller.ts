@@ -35,6 +35,7 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
+  @ApiOperation({ summary: '상품 수정' })
   @Put(':product_id')
   update(
     @Param('product_id', ParseIntPipe) product_id: number,

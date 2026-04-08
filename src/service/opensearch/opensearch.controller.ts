@@ -19,7 +19,9 @@ export class OpensearchController {
     return this.opensearchService.getHealth();
   }
 
-  @ApiOperation({ summary: 'MySQL 상품 데이터를 OpenSearch 인덱스로 bulk 적재' })
+  @ApiOperation({
+    summary: 'MySQL 상품 데이터를 OpenSearch 인덱스로 bulk 적재',
+  })
   @ApiParam({
     name: 'index',
     description: '적재할 OpenSearch 인덱스 이름',
