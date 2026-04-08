@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectOpensearchClient, OpensearchClient } from 'nestjs-opensearch';
 import { toSnakeCase } from '../../helper/common.helper';
+import { CreateSearchProductDto } from './dto/create-search-product.dto';
 import { SearchProductIndexDto } from './dto/search-product-index.dto';
+import { UpdateSearchProductDto } from './dto/update-search-product.dto';
 import {
   ProductSearchDocument,
   ProductSearchMapper,
@@ -92,6 +99,89 @@ export class SearchService {
       limit,
       total,
       items,
+    };
+  }
+
+  async create(createSearchProductDto: CreateSearchProductDto) {
+    const searchId = String(createSearchProductDto.search_id);
+    const existsResponse = await this.opensearchClient.exists({
+      index: this.index,
+      id: searchId,
+    });
+
+    if (existsResponse.body) {
+      throw new ConflictException(
+        `search_id=${createSearchProductDto.search_id} 색인 상품이 이미 존재합니다.`,
+      );
+    }
+
+    const document = ProductSearchMapper.toDocument(
+      createSearchProductDto,
+      new Date().toISOString(),
+    );
+
+    const response = await this.opensearchClient.index({
+      index: this.index,
+      id: searchId,
+      refresh: true,
+      body: document,
+    });
+
+    return {
+      search_id: createSearchProductDto.search_id,
+      result: response.body.result,
+      item: ProductSearchMapper.toResponse(response.body._id, document),
+    };
+  }
+
+  async update(
+    search_id: number,
+    updateSearchProductDto: UpdateSearchProductDto,
+  ) {
+    if (
+      updateSearchProductDto.product_name === undefined &&
+      updateSearchProductDto.product_price === undefined
+    ) {
+      throw new BadRequestException(
+        '최소 한 개 이상의 색인 상품 수정 값이 필요합니다.',
+      );
+    }
+
+    const currentDocument = await this.getDocumentOrThrow(search_id);
+    const nextDocument = ProductSearchMapper.mergeDocument(
+      currentDocument,
+      updateSearchProductDto,
+      new Date().toISOString(),
+    );
+
+    const response = await this.opensearchClient.update({
+      index: this.index,
+      id: String(search_id),
+      refresh: true,
+      body: {
+        doc: nextDocument,
+      },
+    });
+
+    return {
+      search_id,
+      result: response.body.result,
+      item: ProductSearchMapper.toResponse(search_id, nextDocument),
+    };
+  }
+
+  async delete(search_id: number) {
+    await this.getDocumentOrThrow(search_id);
+
+    const response = await this.opensearchClient.delete({
+      index: this.index,
+      id: String(search_id),
+      refresh: true,
+    });
+
+    return {
+      search_id,
+      result: response.body.result,
     };
   }
 
