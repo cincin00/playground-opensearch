@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -7,6 +8,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const host = process.env.HOST ?? '0.0.0.0';
   const port = Number.parseInt(process.env.PORT ?? '3000', 10);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Playground OpenSearch API')

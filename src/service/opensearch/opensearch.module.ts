@@ -27,5 +27,6 @@ import { OpensearchService } from './opensearch.service';
   ],
   providers: [OpensearchService],
   controllers: [OpensearchController],
+  exports: [NestjsOpensearchModule, OpensearchService],
 })
 export class OpensearchModule {}
